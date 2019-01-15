@@ -69,12 +69,15 @@ function createMineField() {
 
 
 function renderMineField(mineField) {
+  // clear console
+  process.stdout.write('\x1B[2J\x1B[0f');
+
   const rowLabelPadding = '  ';
-  const divider = rowLabelPadding + replicate('-', 8 * 4);
+  const divider = rowLabelPadding + replicate('-', 8 * 7);
 
   let str = rowLabelPadding;
   for (let i = 0; i < numColumns; i++) {
-    str += ` ${i}  `;
+    str += `  ${i}    `;
   }
   str += '\n';
 
@@ -83,16 +86,17 @@ function renderMineField(mineField) {
 
   let cell;
   for (let i = 0; i < numRows; i++) {
+    // Row label
     str += `${i}|`;
     for (let j = 0; j < numColumns; j++) {
       cell = mineField[i][j];
 
       if (cell.show) {
-        if (cell.isMine) str += ' * |'
-        else str += ` ${cell.numAdjacentMines} |`;
+        if (cell.isMine) str += '  *   |'
+        else str += `  ${cell.numAdjacentMines}   |`;
       }
       else {
-        str += `${i},${j}|`;
+        str += ` ${i},${j}  |`;
       }
     }
 
@@ -161,7 +165,11 @@ async function start() {
       }
 
       console.log(renderMineField(mineField));
-      const playAgain = await question('You have lost! Play again? (y or n)\n');
+
+      let playAgain;
+      do {
+        playAgain = await question('You have lost! Play again? (y or n)\n');
+      } while (!(/^(y|n)$/i).test(playAgain));
 
       // TODO: validate playAgain
 
@@ -197,9 +205,9 @@ async function start() {
         let playAgain;
         do {
           playAgain = await question('You won! Play again? (y or n)\n');
-        } while (!(/y|n/i).test(playAgain));
+        } while (!(/^(y|n)$/i).test(playAgain));
 
-        if (playAgain === 'y') shouldRestart = true;
+        if (playAgain.toLowerCase() === 'y') shouldRestart = true;
         else shouldRestart = false;
 
         break;

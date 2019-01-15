@@ -44,7 +44,6 @@ function createMineField() {
     mineField[i] = [];
     for (let j = 0; j < numColumns; j++) {
       if (mineCoordinates.find(c => c[0] === i && c[1] === j)) {
-        // 2048 represents a mine. Otherwise it will be the number of adjacent mines.
         mineField[i][j] = { isMine: true, show: false };
       }
       else {
